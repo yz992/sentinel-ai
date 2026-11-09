@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#05080a" />
+  <meta name="description" content="Sentinel AI — a local-first threat detection, indicator intelligence and investigation workspace." />
+  <title>Sentinel AI — Threat Detection &amp; Investigation</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="preload" href="assets/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/platform.css?v=4" />
+</head>
+<body data-view="simple">
+  <svg class="svg-sprite" aria-hidden="true">
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2.5 20 6v5.4c0 4.7-3.4 8.9-8 10.1-4.6-1.2-8-5.4-8-10.1V6l8-3.5Z"/><path d="m8.6 11.7 2.2 2.2 4.7-4.8"/></symbol>
+    <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3"/><path d="M12 12 19 7.5"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="m9.5 14.5 5-5"/><path d="M7.3 16.7 5.8 18.2a3.5 3.5 0 0 1-5-5l3-3a3.5 3.5 0 0 1 5 0"/><path d="m16.7 7.3 1.5-1.5a3.5 3.5 0 0 1 5 5l-3 3a3.5 3.5 0 0 1-5 0"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="m4 17 4.5-4.5 3.2 3.2 2.6-2.6L20 19"/></symbol>
+    <symbol id="i-message" viewBox="0 0 24 24"><path d="M20.5 11.2a8.5 8.5 0 0 1-12.2 7.5L3.5 20l1.4-4.5A8.5 8.5 0 1 1 20.5 11.2Z"/><path d="M8.5 10.5h7M8.5 14h4"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.4-5.9L3.5 8.5"/><path d="M3.5 3.5v5h5M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M2.5 12h4l2.3-6 4.2 12 2.4-6h6.1"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2.5 1.6 5.4L19 9.5l-5.4 1.6L12 16.5l-1.6-5.4L5 9.5l5.4-1.6L12 2.5Z"/><path d="m19 15 .7 2.3L22 18l-2.3.7L19 21l-.7-2.3L16 18l2.3-.7L19 15Z"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.2 4.2L19 7"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.8 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4.5M12 17.2v.1"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5v-3a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3.5v11M8 10.5l4 4 4-4"/><path d="M4.5 17.5v2h15v-2"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6 7l1 13h10l1-13M10 11v5M14 11v5"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10" width="15" height="10.5" rx="2.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12s3.3-6 9.5-6 9.5 6 9.5 6-3.3 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.6"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 2"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24"><path d="M3 12h3l2.5-7 4 14 3-7H21"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 9a6 6 0 1 0-12 0c0 7-2.5 7-2.5 8.5h17C20.5 16 18 16 18 9Z"/><path d="M10 21h4"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="m7 9 3 3-3 3M13 15h4"/></symbol>
+    <symbol id="i-fingerprint" viewBox="0 0 24 24"><path d="M12 2.8a8.4 8.4 0 0 1 8.4 8.4c0 3.3-.7 6.2-2 8.8"/><path d="M5.8 6.2A8.4 8.4 0 0 0 3.6 12c0 3.2.8 6 2.2 8.6M8.2 20.2A14 14 0 0 1 7 12a5 5 0 0 1 10 0c0 2.5-.3 5-.8 7.4"/><path d="M12 12v5.6c0 1.4-.3 2.7-.8 3.9"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3.5 7h17M3.5 12h17M3.5 17h17"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3c2.2 2.5 3.3 5.6 3.3 9S14.2 18.5 12 21c-2.2-2.5-3.3-5.6-3.3-9S9.8 5.5 12 3Z"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 2.8h7l5 5v13.4H6V2.8Z"/><path d="M13 2.8v5h5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M3.5 5h17l-6.6 7.5V19l-3.8 2v-8.5L3.5 5Z"/></symbol>
+    <symbol id="i-graph" viewBox="0 0 24 24"><circle cx="6" cy="6.5" r="2.5"/><circle cx="18" cy="6.5" r="2.5"/><circle cx="12" cy="17.5" r="2.5"/><path d="m8.2 7.4 2.8 7.6M15.8 7.4l-2.8 7.6M8.5 6.5h7"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><path d="M5 3.5h10l4 4v13H5v-17Z"/><path d="M15 3.5v4h4M8.5 11h7M8.5 14.5h7M8.5 18h4"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4.2L20 8.2 15.8 4 4 15.8V20Z"/><path d="m13.8 6 4.2 4.2"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11.5A8 8 0 0 0 6 7L4 9M4 4v5h5M4 12.5A8 8 0 0 0 18 17l2-2M20 20v-5h-5"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+    <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-6M4.5 11.5v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-6"/></symbol>
+    <symbol id="i-network" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="2.5" y="16" width="6" height="5" rx="1"/><rect x="15.5" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M5.5 16v-2h13v2M12 12v2"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></symbol>
+    <symbol id="i-report" viewBox="0 0 24 24"><path d="M6 2.8h8l4 4v13.4H6V2.8Z"/><path d="M14 2.8v4h4M9 11h6M9 14.5h6M9 18h3.5"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4.5 11 7.5-11 7.5v-15Z"/></symbol>
+    <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.8 8.8 6.4 6.4M15.2 8.8l-6.4 6.4"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.2 2.7 2.7 5.3-5.4"/></symbol>
+  </svg>
+
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient-orb orb-one"></div>
+    <div class="ambient-orb orb-two"></div>
+    <div class="ambient-grid"></div>
+    <div class="ambient-noise"></div>
+  </div>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg class="icon"><use href="#i-shield"></use></svg>
+          <span class="brand-orbit"></span>
+        </div>
+        <div class="brand-type">
+          <span class="brand-name">SENTINEL</span>
+          <span class="brand-ai">AI</span>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <p class="nav-label">Workspace</p>
+        <nav class="primary-nav" aria-label="Workspace">
+          <button class="nav-item active" data-route="overview" aria-current="page">
+            <svg class="icon"><use href="#i-grid"></use></svg>
+            <span>Overview</span>
+          </button>
+          <button class="nav-item" data-route="intel">
+            <svg class="icon"><use href="#i-globe"></use></svg>
+            <span>Threat intelligence</span>
+            <span class="nav-count" id="navIntelCount">0</span>
+          </button>
+          <button class="nav-item" data-route="scanner">
+            <svg class="icon"><use href="#i-radar"></use></svg>
+            <span>Scanner</span>
+            <span class="nav-live" aria-hidden="true"></span>
+          </button>
+          <button class="nav-item" data-route="investigations">
+            <svg class="icon"><use href="#i-shield"></use></svg>
+            <span>Investigations</span>
+            <span class="nav-count" id="navInvCount">0</span>
+          </button>
+          <button class="nav-item" data-route="analytics">
+            <svg class="icon"><use href="#i-activity"></use></svg>
+            <span>Analytics</span>
+          </button>
+          <button class="nav-item" data-route="history">
+            <svg class="icon"><use href="#i-history"></use></svg>
+            <span>Scan history</span>
+            <span class="nav-count" id="navHistoryCount">0</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="nav-section">
+        <p class="nav-label">System</p>
+        <nav class="primary-nav" aria-label="System">
+          <button class="nav-item" data-route="settings">
+            <svg class="icon"><use href="#i-settings"></use></svg>
+            <span>Settings &amp; privacy</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="engine-card">
+        <div class="engine-card-top">
+          <span class="status-pulse"></span>
+          <span class="engine-state">Local engine ready</span>
+          <span class="engine-version">v2.5.0</span>
+        </div>
+        <div class="engine-meta">
+          <span>Heuristic ruleset</span>
+          <span>No network lookups</span>
+        </div>
+      </div>
+
+      <div class="local-card">
+        <div class="local-card-icon"><svg class="icon"><use href="#i-lock"></use></svg></div>
+        <div>
+          <strong>Local-first workspace</strong>
+          <p>Scans, indicators and investigations stay in this browser.</p>
+        </div>
+        <button class="local-card-action" data-route="settings">Manage data <svg class="icon"><use href="#i-arrow"></use></svg></button>
+      </div>
+
+      <div class="sidebar-foot">
+        <span class="status-pulse"></span>
+        <span>Sentinel AI · private build</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-button mobile-menu" id="mobileMenu" aria-label="Open navigation">
+            <svg class="icon"><use href="#i-menu"></use></svg>
+          </button>
+          <div class="breadcrumb">
+            <span class="crumb-root">Sentinel AI</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-current" id="crumbCurrent">Overview</span>
+          </div>
+        </div>
+        <button class="topbar-brand" data-route="overview" aria-label="Sentinel AI overview">
+          <span class="brand-mark"><svg class="icon"><use href="#i-shield"></use></svg></span>
+          <span class="brand-word">Sentinel<em>AI</em></span>
+        </button>
+        <div class="topbar-right">
+          <div class="view-switch" role="group" aria-label="Detail level">
+            <button class="view-option active" data-view-option="simple" aria-pressed="true" title="Plain-language results">
+              <svg class="icon"><use href="#i-eye"></use></svg>
+              <span>Simple</span>
+            </button>
+            <button class="view-option" data-view-option="advanced" aria-pressed="false" title="Full technical evidence">
+              <svg class="icon"><use href="#i-terminal"></use></svg>
+              <span>Advanced</span>
+            </button>
+          </div>
+          <div class="privacy-chip">
+            <svg class="icon"><use href="#i-fingerprint"></use></svg>
+            <span>No external lookups</span>
+          </div>
+          <button class="command-trigger" id="commandTrigger" aria-label="Open the scanner">
+            <svg class="icon"><use href="#i-search"></use></svg>
+            <span>Quick scan</span>
+            <kbd>⌘ K</kbd>
+          </button>
+          <button class="icon-button" data-route="settings" aria-label="Settings and privacy">
+            <svg class="icon"><use href="#i-settings"></use></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <!-- ═══════════════════════════════════════════════════════════════════
+             OVERVIEW
+             ═══════════════════════════════════════════════════════════════════ -->
+        <section class="section-panel active" data-section-panel="overview" id="overviewSection">
+          <header class="page-heading page-heading-compact">
+            <div class="heading-copy">
+              <div class="eyebrow"><span class="eyebrow-line"></span>Security operations overview</div>
+              <h1>Security <em>overview</em></h1>
+              <p>Everything below is calculated from scans, indicators and investigations stored in this browser. Nothing is sampled or simulated.</p>
+            </div>
+            <div class="heading-actions">
+              <button class="secondary-button" data-route="investigations"><svg class="icon"><use href="#i-shield"></use></svg>Investigations</button>
+              <button class="primary-button" data-route="scanner"><svg class="icon"><use href="#i-radar"></use></svg>New scan</button>
+            </div>
+          </header>
+
+          <div class="status-banner" id="overviewStatus"></div>
+          <div class="metric-grid" id="overviewMetrics"></div>
+
+          <div class="overview-grid">
+            <section class="panel chart-panel">
+              <div class="panel-head">
+                <div><span class="panel-kicker">Stored verdicts</span><h2>Threat severity distribution</h2></div>
+                <span class="panel-count" id="severityChartMeta">0 scans</span>
+              </div>
+              <div class="chart-body" id="severityChart"></div>
+            </section>
+
+            <section class="panel chart-panel">
+              <div class="panel-head">
+                <div><span class="panel-kicker">Signals that fired</span><h2>Most frequent categories</h2></div>
+                <span class="panel-count">stored scans</span>
+              </div>
+              <div class="chart-body" id="categoryChart"></div>
+            </section>
+
+            <section class="panel overview-activity">
+              <div class="panel-head">
+                <div><span class="panel-kicker">Local ledger</span><h2>Recent scan activity</h2></div>
+                <button class="text-button" data-route="history">View all <svg class="icon"><use href="#i-arrow"></use></svg></button>
+              </div>
+              <div id="recentActivity"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <div><span class="panel-kicker">Incident workspace</span><h2>Recent investigations</h2></div>
+                <button class="text-button" data-route="investigations">Open workspace <svg class="icon"><use href="#i-arrow"></use></svg></button>
+              </div>
+              <div id="recentInvestigations"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <div><span class="panel-kicker">Observation ledger</span><h2>Latest suspicious indicators</h2></div>
+                <button class="text-button" data-route="intel">Threat intel <svg class="icon"><use href="#i-arrow"></use></svg></button>
+              </div>
+              <div id="latestIndicators"></div>
+            </section>
+          </div>
+          <p class="dataset-note"><svg class="icon"><use href="#i-database"></use></svg> Overview metrics reflect local browser storage only. Empty states appear until real scans exist.</p>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             THREAT INTELLIGENCE
+             ═══════════════════════════════════════════════════════════════════ -->
+        <section class="section-panel" data-section-panel="intel" id="intelPanel" hidden>
+          <header class="page-heading page-heading-compact">
+            <div class="heading-copy">
+              <div class="eyebrow"><span class="eyebrow-line"></span>Local indicator intelligence</div>
+              <h1>Threat <em>intelligence</em></h1>
+              <p>Analyze URLs, domains, IP addresses, emails, hashes and suspicious filenames with local heuristics. External reputation is explicitly reported as unknown.</p>
+            </div>
+            <div class="heading-actions">
+              <button class="secondary-button" data-route="analytics"><svg class="icon"><use href="#i-activity"></use></svg>Test centre</button>
+              <button class="primary-button" data-route="scanner"><svg class="icon"><use href="#i-radar"></use></svg>Scan a source</button>
+            </div>
+          </header>
+
+          <div class="intel-grid">
+            <section class="panel intel-analyze-panel">
+              <div class="panel-head">
+                <div><span class="panel-kicker">No network requests</span><h2>Analyze an indicator</h2></div>
+                <span class="dataset-badge"><svg class="icon"><use href="#i-lock"></use></svg>Local only</span>
+              </div>
+              <div class="intel-analyze-body">
+                <label class="field-label" for="intelInput">Indicator value</label>
+                <div class="intel-search">
+                  <svg class="icon"><use href="#i-search"></use></svg>
+                  <input id="intelInput" type="text" autocomplete="off" spellcheck="false" placeholder="https://example.com, 8.8.8.8, user@example.com, SHA-256, invoice.exe" aria-label="Indicator value" />
+                  <button class="primary-button compact" id="intelAnalyze" type="button"><svg class="icon"><use href="#i-target"></use></svg>Analyze</button>
+                </div>
+                <div class="example-row intel-examples">
+                  <span class="examples-label">Try</span>
+                  <button class="example-chip" data-intel-example="https://paypa1-secure-login.verify-account.top/session/confirm">Phishing URL</button>
+                  <button class="example-chip" data-intel-example="github.com">Domain</button>
+                  <button class="example-chip" data-intel-example="192.168.1.1">Private IP</button>
+                  <button class="example-chip" data-intel-example="security@paypa1-support.top">Email</button>
+                  <button class="example-chip" data-intel-example="invoice_2026.pdf.exe">Filename</button>
+                  <button class="example-chip" data-intel-example="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855">SHA-256</button>
+                </div>
+                <div class="intel-result" id="intelResult">
+                  <div class="inline-empty">
+                    <span class="inline-empty-icon"><svg class="icon"><use href="#i-globe"></use></svg></span>
+                    <div><strong>No indicator analyzed yet</strong><span>Sentinel will classify the value and run local structural checks. It will not fetch the URL, resolve the domain or query a reputation provider.</span></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel intel-ledger-panel">
+              <div class="panel-head">
+                <div><span class="panel-kicker">Extracted + manual</span><h2>Indicator ledger</h2></div>
+                <span class="panel-count" id="indicatorCount">0 indicators</span>
+              </div>
+              <div class="ledger-toolbar">
+                <div class="search-field">
+                  <svg class="icon"><use href="#i-search"></use></svg>
+                  <input id="indicatorSearch" type="search" placeholder="Search indicators" aria-label="Search indicators" />
+                </div>
+                <select id="indicatorTypeFilter" class="select-field" aria-label="Filter indicators by type">
+                  <option value="all">All types</option>
+                  <option value="url">URLs</option>
+                  <option value="domain">Domains</option>
+                  <option value="ipv4">IPv4</option>
+                  <option value="ipv6">IPv6</option>
+                  <option value="email">Emails</option>
+                  <option value="hash">Hashes</option>
+                  <option value="filename">Filenames</option>
+                </select>
+              </div>
+              <div class="ledger-list" id="indicatorList"></div>
+            </section>
+          </div>
+
+          <section class="panel graph-panel">
+            <div class="panel-head">
+              <div><span class="panel-kicker">Evidence-supported links only</span><h2>Threat relationship graph</h2></div>
+              <div class="panel-actions">
+                <span class="panel-count" id="graphMeta">0 nodes</span>
+                <button class="ghost-button" id="refreshGraph"><svg class="icon"><use href="#i-refresh"></use></svg>Refresh</button>
+              </div>
+            </div>
+            <div class="graph-layout">
+              <div class="graph-stage" id="graphStage"></div>
+              <aside class="graph-detail" id="graphDetails">
+                <span class="panel-kicker">Node inspector</span>
+                <div class="inline-empty compact">
+                  <span class="inline-empty-icon"><svg class="icon"><use href="#i-graph"></use></svg></span>
+                  <div><strong>Select a node</strong><span>Click any indicator in the graph to inspect its type, category, source evidence and local score.</span></div>
+                </div>
+              </aside>
+            </div>
+            <div class="graph-legend">
+              <span><i style="--node-color:#6f9cff"></i>URL</span>
+              <span><i style="--node-color:#58edbc"></i>Domain</span>
+              <span><i style="--node-color:#b696ff"></i>IP address</span>
+              <span><i style="--node-color:#f5c451"></i>Email</span>
+              <span><i style="--node-color:#ff9257"></i>Hash</span>
+              <span><i style="--node-color:#ff7b9c"></i>Filename</span>
+              <span class="graph-legend-note">Edges come from URL/domain structure, mailbox domains or co-occurrence in the same stored scan.</span>
+              <span class="graph-mobile-hint">Narrow screens hide node labels — tap a node to inspect it.</span>
+            </div>
+          </section>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             SCANNER (existing engine + UI preserved)
+             ═══════════════════════════════════════════════════════════════════ -->
+        <section class="section-panel" data-section-panel="scanner" id="scannerPanel" hidden>
+          <section class="page-heading">
+            <div class="heading-copy">
+              <div class="eyebrow">
+                <span class="eyebrow-line"></span>
+                <span class="simple-only">Free safety check · runs on your device</span>
+                <span class="advanced-only">Explainable local analysis · Engine 2.5.0</span>
+              </div>
+              <h1 class="simple-only">Is it <em>safe?</em></h1>
+              <h1 class="advanced-only">See the threat <em>before</em> it sees you.</h1>
+              <p class="simple-only">Check a link, a screenshot, or a suspicious message before you click, pay, or share. We explain the result in plain English.</p>
+              <p class="advanced-only">Paste a link, drop a photo, or inspect a suspicious message. Sentinel correlates deterministic threat signals locally — nothing leaves your device.</p>
+              <div class="simple-trust simple-only">
+                <span><svg class="icon"><use href="#i-lock"></use></svg> Nothing is uploaded</span>
+                <span><svg class="icon"><use href="#i-check"></use></svg> No sign-up needed</span>
+                <span><svg class="icon"><use href="#i-clock"></use></svg> Answer in seconds</span>
+              </div>
+            </div>
+            <div class="heading-stats advanced-only">
+              <div class="head-stat">
+                <span class="head-stat-label">Threats surfaced</span>
+                <strong id="statThreats">0</strong>
+                <span class="head-stat-foot"><span class="mini-pulse"></span> this workspace</span>
+              </div>
+              <div class="head-stat">
+                <span class="head-stat-label">Analyses run</span>
+                <strong id="statScans">0</strong>
+                <span class="head-stat-foot">on this device</span>
+              </div>
+              <div class="head-stat action-stat">
+                <span class="head-stat-label">Analysis path</span>
+                <strong>100<span>%</span></strong>
+                <span class="head-stat-foot">local, no upload</span>
+              </div>
+            </div>
+          </section>
+
+          <div class="analysis-grid" id="console">
+            <section class="panel scanner-panel">
+              <div class="panel-head scanner-head">
+                <div class="mode-tabs" role="tablist" aria-label="Analysis mode">
+                  <button class="mode-tab active" data-mode="url" role="tab" aria-selected="true">
+                    <svg class="icon"><use href="#i-link"></use></svg>
+                    <span>Link</span>
+                  </button>
+                  <button class="mode-tab" data-mode="image" role="tab" aria-selected="false">
+                    <svg class="icon"><use href="#i-image"></use></svg>
+                    <span class="simple-only">Photo</span><span class="advanced-only">Image</span>
+                  </button>
+                  <button class="mode-tab" data-mode="message" role="tab" aria-selected="false">
+                    <svg class="icon"><use href="#i-message"></use></svg>
+                    <span>Message</span>
+                  </button>
+                </div>
+                <div class="engine-chip advanced-only">
+                  <span class="engine-chip-dot"></span>
+                  Sentinel core
+                </div>
+              </div>
+
+              <div class="scanner-body">
+                <div class="mode-panel active" data-panel="url">
+                  <div class="input-heading">
+                    <div>
+                      <h2 class="simple-only">Check a link</h2>
+                      <h2 class="advanced-only">Analyze a suspicious link</h2>
+                      <p class="simple-only">Paste it below. We'll look for fake login pages, scams, and harmful downloads.</p>
+                      <p class="advanced-only">We'll inspect the domain, route, redirects, and intent signals.</p>
+                    </div>
+                    <span class="input-type advanced-only">URL</span>
+                  </div>
+
+                  <label class="field-label" for="urlInput"><span class="simple-only">Paste the link here</span><span class="advanced-only">Destination URL</span></label>
+                  <div class="url-field" id="urlField">
+                    <div class="field-icon"><svg class="icon"><use href="#i-link"></use></svg></div>
+                    <input id="urlInput" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://suspicious-site.com/verify-account" aria-label="Destination URL" />
+                    <button class="field-clear" id="clearUrl" aria-label="Clear URL" hidden><svg class="icon"><use href="#i-close"></use></svg></button>
+                    <button class="paste-button" id="pasteUrl" type="button">
+                      <svg class="icon"><use href="#i-copy"></use></svg>
+                      Paste
+                    </button>
+                  </div>
+
+                  <div class="examples">
+                    <span class="examples-label">Try a sample</span>
+                    <button class="example-chip" data-example-url="https://paypa1-secure-login.verify-account.top/session/confirm?token=8f3a">Phishing link</button>
+                    <button class="example-chip" data-example-url="https://github.com/login">Legitimate</button>
+                    <button class="example-chip" data-example-url="http://192.168.1.1/router-login">Suspicious</button>
+                    <button class="example-chip" data-example-url="data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==">Payload</button>
+                  </div>
+
+                  <div class="inspect-strip advanced-only">
+                    <div class="inspect-item"><svg class="icon"><use href="#i-globe"></use></svg><span><strong>Domain spoofing</strong><small>Homoglyph + typosquat</small></span></div>
+                    <div class="inspect-item"><svg class="icon"><use href="#i-arrow-up-right"></use></svg><span><strong>Redirect trace</strong><small>Cloaked destinations</small></span></div>
+                    <div class="inspect-item"><svg class="icon"><use href="#i-activity"></use></svg><span><strong>Payload intent</strong><small>Files + obfuscation</small></span></div>
+                  </div>
+                </div>
+
+                <div class="mode-panel" data-panel="image">
+                  <div class="input-heading">
+                    <div>
+                      <h2 class="simple-only">Check a photo or screenshot</h2>
+                      <h2 class="advanced-only">Inspect an image or photo</h2>
+                      <p class="simple-only">Upload it and we'll look for hidden details, fake QR codes, and scam text.</p>
+                      <p class="advanced-only">Metadata, QR payloads, embedded code, OCR text, and polyglot files.</p>
+                    </div>
+                    <span class="input-type advanced-only">FILE</span>
+                  </div>
+
+                  <input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/avif,image/tiff,image/bmp,image/svg+xml,.jpg,.jpeg,.png,.webp,.gif,.heic,.heif,.avif,.tif,.tiff,.bmp,.svg" hidden />
+                  <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload an image for analysis">
+                    <div class="dropzone-icon">
+                      <svg class="icon"><use href="#i-image"></use></svg>
+                      <span class="drop-orbit"></span>
+                    </div>
+                    <div class="dropzone-copy">
+                      <strong class="simple-only">Add a photo or screenshot</strong>
+                      <strong class="advanced-only">Drop an image here</strong>
+                      <span><span class="simple-only">Tap to choose a file · JPEG, PNG, WebP, HEIC</span><span class="advanced-only">or <u>browse files</u> · JPEG, PNG, WebP, HEIC, SVG</span></span>
+                    </div>
+                    <div class="dropzone-meta advanced-only">
+                      <span>EXIF</span><span>QR</span><span>OCR</span><span>Payload</span>
+                    </div>
+                  </div>
+
+                  <div class="file-preview" id="filePreview" hidden>
+                    <div class="file-thumb"><img id="previewImage" alt="Selected file preview" /></div>
+                    <div class="file-meta">
+                      <strong id="fileName">image.jpg</strong>
+                      <span id="fileDetails">0 KB · image/jpeg</span>
+                      <div class="file-tags"><span>Ready for deep inspection</span></div>
+                    </div>
+                    <button class="icon-button file-remove" id="removeFile" aria-label="Remove image"><svg class="icon"><use href="#i-close"></use></svg></button>
+                  </div>
+
+                  <div class="examples image-examples">
+                    <span class="examples-label">Try a sample</span>
+                    <button class="example-chip" data-example-image="assets/samples/phishing-screenshot.png">Phishing screenshot</button>
+                    <button class="example-chip" data-example-image="assets/samples/malicious-qr.png">Malicious QR</button>
+                    <button class="example-chip" data-example-image="assets/samples/hidden-payload.jpg">Hidden payload</button>
+                    <button class="example-chip" data-example-image="assets/samples/ai-metadata.png">AI provenance</button>
+                    <button class="example-chip" data-example-image="assets/samples/clean.png">Clean image</button>
+                  </div>
+
+                  <div class="inspect-strip image-strip advanced-only">
+                    <div class="inspect-item"><svg class="icon"><use href="#i-fingerprint"></use></svg><span><strong>Metadata forensics</strong><small>EXIF + GPS + provenance</small></span></div>
+                    <div class="inspect-item"><svg class="icon"><use href="#i-grid"></use></svg><span><strong>QR decoding</strong><small>Payload destination scan</small></span></div>
+                    <div class="inspect-item"><svg class="icon"><use href="#i-eye"></use></svg><span><strong>On-device OCR</strong><small>Visual phishing language</small></span></div>
+                  </div>
+                </div>
+
+                <div class="mode-panel" data-panel="message">
+                  <div class="input-heading">
+                    <div>
+                      <h2 class="simple-only">Check a message</h2>
+                      <h2 class="advanced-only">Investigate a suspicious message</h2>
+                      <p class="simple-only">Paste the text. We'll spot pressure, fake requests, and dangerous links.</p>
+                      <p class="advanced-only">Detect coercion, credential theft, payment fraud, and malicious links.</p>
+                    </div>
+                    <span class="input-type advanced-only">TEXT</span>
+                  </div>
+
+                  <label class="field-label" for="messageInput"><span class="simple-only">Paste the message here</span><span class="advanced-only">Message content</span></label>
+                  <div class="message-field">
+                    <textarea id="messageInput" maxlength="50000" placeholder="Paste the email, SMS, DM, or chat message here…" aria-label="Message content"></textarea>
+                    <div class="message-footer">
+                      <span><svg class="icon"><use href="#i-lock"></use></svg> Processed locally · never stored on a server</span>
+                      <span class="char-count"><strong id="charCount">0</strong> / 50,000</span>
+                    </div>
+                  </div>
+
+                  <div class="examples">
+                    <span class="examples-label">Try a sample</span>
+                    <button class="example-chip" data-example-message="URGENT: Your Apple ID has been locked due to unauthorized access. You must verify your identity within 24 hours or your account will be permanently suspended. Verify now: http://apple-id-verify.secure-login.top">Fake alert</button>
+                    <button class="example-chip" data-example-message="Hi, are we still meeting for lunch tomorrow at 1? I can book the corner table.">Legitimate</button>
+                    <button class="example-chip" data-example-message="Hi, this is the CFO. I need you to buy four $500 Apple gift cards for a client incentive today. Keep this confidential and send me the codes. Do not tell anyone.">Gift-card scam</button>
+                    <button class="example-chip" data-example-message="Final warning: your Bitcoin wallet is being deactivated. Send your 12-word seed phrase to our support team immediately to restore access.">Seed theft</button>
+                  </div>
+
+                  <div class="inspect-strip advanced-only">
+                    <div class="inspect-item"><svg class="icon"><use href="#i-message"></use></svg><span><strong>Social engineering</strong><small>Urgency + coercion</small></span></div>
+                    <div class="inspect-item"><svg class="icon"><use href="#i-lock"></use></svg><span><strong>Credential theft</strong><small>OTP + seed phrase</small></span></div>
+                    <div class="inspect-item"><svg class="icon"><use href="#i-link"></use></svg><span><strong>Link extraction</strong><small>Deep URL inspection</small></span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="scanner-footer">
+                <div class="local-note">
+                  <span class="local-note-icon"><svg class="icon"><use href="#i-lock"></use></svg></span>
+                  <div>
+                    <strong><span class="simple-only">Your stuff stays private</span><span class="advanced-only">Private by architecture</span></strong>
+                    <span><span class="simple-only">Checks run in your browser. Nothing is uploaded.</span><span class="advanced-only">Analysis runs entirely in your browser.</span></span>
+                  </div>
+                </div>
+                <button class="scan-button" id="scanButton">
+                  <span class="scan-button-label">
+                    <svg class="icon"><use href="#i-radar"></use></svg>
+                    <span id="scanButtonText">Check it now</span>
+                  </span>
+                  <span class="scan-key">⌘ ↵</span>
+                </button>
+              </div>
+            </section>
+
+            <aside class="panel verdict-panel" id="verdictPanel" aria-live="polite">
+              <div class="panel-head verdict-head">
+                <span class="panel-kicker"><span class="simple-only">Your result</span><span class="advanced-only">Threat verdict</span></span>
+                <div class="verdict-state" id="verdictState"><span></span> Ready</div>
+              </div>
+              <div class="verdict-scroll" id="verdictScroll">
+                <div class="verdict-idle" id="verdictIdle">
+                  <div class="idle-radar">
+                    <div class="radar-ring ring-one"></div>
+                    <div class="radar-ring ring-two"></div>
+                    <div class="radar-ring ring-three"></div>
+                    <div class="radar-cross"></div>
+                    <div class="radar-sweep"></div>
+                    <div class="radar-blip blip-one"></div>
+                    <div class="radar-blip blip-two"></div>
+                    <div class="radar-center">
+                      <svg class="icon"><use href="#i-shield"></use></svg>
+                    </div>
+                  </div>
+                  <span class="idle-overline"><span class="simple-only">Ready when you are</span><span class="advanced-only">Sentinel is listening</span></span>
+                  <h3 class="simple-only">Not sure about something?</h3>
+                  <h3 class="advanced-only">Awaiting intelligence</h3>
+                  <p class="simple-only">Paste a link, add a screenshot, or drop in a message. You'll get a clear answer and what to do next.</p>
+                  <p class="advanced-only">Submit a source to generate an explainable threat verdict with confidence, evidence, and response actions.</p>
+                  <div class="idle-metrics advanced-only">
+                    <div><span class="metric-value">Local</span><span>deterministic rules</span></div>
+                    <div><span class="metric-value">0</span><span>network lookups</span></div>
+                    <div><span class="metric-value">100%</span><span>on-device</span></div>
+                  </div>
+                  <div class="idle-scale advanced-only">
+                    <div class="idle-scale-labels"><span>Low</span><span>Moderate</span><span>High</span><span>Critical</span></div>
+                    <div class="threat-scale"><span></span><span></span><span></span><span></span></div>
+                  </div>
+                </div>
+
+                <div class="verdict-scanning" id="verdictScanning" hidden>
+                  <div class="scan-orbit">
+                    <span class="scan-orbit-ring"></span>
+                    <span class="scan-orbit-ring delay"></span>
+                    <span class="scan-orbit-core"><svg class="icon"><use href="#i-radar"></use></svg></span>
+                  </div>
+                  <span class="idle-overline">Correlating signals</span>
+                  <h3 id="scanningTitle">Analyzing source</h3>
+                  <p id="scanningSubtitle">Mapping observable indicators against the Sentinel threat model.</p>
+                  <div class="scan-steps" id="scanSteps">
+                    <div class="scan-step active" data-step="0"><span class="step-dot"></span><span>Parsing source structure</span><span class="step-status">running</span></div>
+                    <div class="scan-step" data-step="1"><span class="step-dot"></span><span>Correlating threat patterns</span><span class="step-status">queued</span></div>
+                    <div class="scan-step" data-step="2"><span class="step-dot"></span><span>Scoring malicious intent</span><span class="step-status">queued</span></div>
+                    <div class="scan-step" data-step="3"><span class="step-dot"></span><span>Generating response actions</span><span class="step-status">queued</span></div>
+                  </div>
+                  <div class="scan-progress"><span id="scanProgressBar"></span></div>
+                  <span class="scan-footnote"><svg class="icon"><use href="#i-lock"></use></svg> Telemetry never leaves this device</span>
+                </div>
+
+                <div class="verdict-result" id="verdictResult" hidden></div>
+              </div>
+            </aside>
+          </div>
+
+          <div class="lower-grid">
+            <section class="panel history-panel" id="historySection">
+              <div class="panel-head">
+                <div>
+                  <span class="panel-kicker"><span class="simple-only">Your checks</span><span class="advanced-only">Local ledger</span></span>
+                  <h2><span class="simple-only">Recent checks</span><span class="advanced-only">Recent analyses</span></h2>
+                </div>
+                <div class="panel-actions">
+                  <button class="ghost-button" id="clearHistory" hidden><svg class="icon"><use href="#i-trash"></use></svg> Clear</button>
+                  <span class="panel-count" id="historyPanelCount">0 checks</span>
+                </div>
+              </div>
+              <div class="history-list" id="historyList">
+                <div class="empty-history">
+                  <div class="empty-history-icon"><svg class="icon"><use href="#i-history"></use></svg></div>
+                  <div><strong>Nothing checked yet</strong><span>Your recent checks will appear here. They stay on this device.</span></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel tips-panel simple-only" id="tipsSection">
+              <div class="panel-head">
+                <div>
+                  <span class="panel-kicker">Good to know</span>
+                  <h2>Three quick safety habits</h2>
+                </div>
+                <span class="tips-badge"><svg class="icon"><use href="#i-shield"></use></svg> Stay safe</span>
+              </div>
+              <div class="tips-list">
+                <div class="tip-row">
+                  <span class="tip-num">1</span>
+                  <div><strong>Slow down</strong><p>Scams rely on panic. If a message says “act now”, that is your cue to stop.</p></div>
+                </div>
+                <div class="tip-row">
+                  <span class="tip-num">2</span>
+                  <div><strong>Check another way</strong><p>Call the person or open the company’s official app instead of using the link.</p></div>
+                </div>
+                <div class="tip-row">
+                  <span class="tip-num">3</span>
+                  <div><strong>Never share codes</strong><p>Passwords, one-time codes, and recovery phrases should stay private. Always.</p></div>
+                </div>
+              </div>
+              <div class="tips-footer">
+                <span>Need evidence for a report?</span>
+                <button class="text-button" data-route="investigations">Open investigations <svg class="icon"><use href="#i-arrow"></use></svg></button>
+              </div>
+            </section>
+
+            <section class="panel engine-panel advanced-only">
+              <div class="panel-head">
+                <div><span class="panel-kicker">Local configuration</span><h2>Engine &amp; storage</h2></div>
+                <span class="live-badge"><span></span> Ready</span>
+              </div>
+              <div class="engine-facts">
+                <div><span>Engine version</span><strong>2.5.0</strong></div>
+                <div><span>Analysis location</span><strong>This browser</strong></div>
+                <div><span>External analysis requests</span><strong>None</strong></div>
+                <div><span>Scan retention</span><strong>50 most recent</strong></div>
+                <div><span>Reputation provider</span><strong>Not configured</strong></div>
+              </div>
+              <div class="intel-footer">
+                <div class="intel-note"><svg class="icon"><use href="#i-lock"></use></svg><span>Files are never executed or uploaded</span></div>
+                <button class="text-button" data-route="settings">Data controls <svg class="icon"><use href="#i-arrow"></use></svg></button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             INVESTIGATIONS
+             ═══════════════════════════════════════════════════════════════════ -->
+        <section class="section-panel" data-section-panel="investigations" id="investigationsPanel" hidden>
+          <header class="page-heading page-heading-compact">
+            <div class="heading-copy">
+              <div class="eyebrow"><span class="eyebrow-line"></span>Incident workspace</div>
+              <h1>Investigations</h1>
+              <p>Track a scan as an incident, record analyst notes, associate indicators and move it through containment to resolution.</p>
+            </div>
+            <div class="heading-actions">
+              <button class="primary-button" id="newInvestigation"><svg class="icon"><use href="#i-plus"></use></svg>New investigation</button>
+            </div>
+          </header>
+
+          <div id="investigationListView">
+            <div class="inv-summary" id="investigationSummary"></div>
+            <div class="panel">
+              <div class="ledger-toolbar inv-toolbar">
+                <div class="search-field">
+                  <svg class="icon"><use href="#i-search"></use></svg>
+                  <input id="invSearch" type="search" placeholder="Search title, incident ID or description" aria-label="Search investigations" />
+                </div>
+                <select id="invStatusFilter" class="select-field" aria-label="Filter investigations by status">
+                  <option value="all">All statuses</option>
+                  <option value="Open">Open</option>
+                  <option value="Investigating">Investigating</option>
+                  <option value="Contained">Contained</option>
+                  <option value="Resolved">Resolved</option>
+                </select>
+                <select id="invSeverityFilter" class="select-field" aria-label="Filter investigations by severity">
+                  <option value="all">All severities</option>
+                  <option value="critical">Critical</option>
+                  <option value="high">High</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="low">Low</option>
+                </select>
+                <span class="panel-count" id="investigationCount">0 investigations</span>
+              </div>
+              <div id="investigationList" class="inv-list"></div>
+            </div>
+          </div>
+
+          <div id="investigationDetailView" hidden></div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             ANALYTICS / DETECTION TEST CENTRE
+             ═══════════════════════════════════════════════════════════════════ -->
+        <section class="section-panel" data-section-panel="analytics" id="analyticsPanel" hidden>
+          <header class="page-heading page-heading-compact">
+            <div class="heading-copy">
+              <div class="eyebrow"><span class="eyebrow-line"></span>Detection analytics</div>
+              <h1>Test <em>centre</em></h1>
+              <p>Run the project’s labelled dataset through the real scanner. Metrics describe this dataset only — they are not real-world detection performance.</p>
+            </div>
+            <div class="heading-actions">
+              <button class="primary-button" id="runTests"><svg class="icon"><use href="#i-play"></use></svg>Run test suite</button>
+            </div>
+          </header>
+
+          <section class="panel test-panel">
+            <div class="panel-head">
+              <div><span class="panel-kicker">Actual scanner output</span><h2>Detection quality on the labelled dataset</h2></div>
+              <span class="dataset-badge"><svg class="icon"><use href="#i-database"></use></svg>Dataset-scoped</span>
+            </div>
+            <div class="test-notice">
+              <svg class="icon"><use href="#i-alert"></use></svg>
+              <p><strong>This is not a real-world accuracy claim.</strong> Cases use the bundled sample fixtures and hand-written benign/malicious inputs. A scan is counted as flagged when its score reaches 20/100 (moderate or above). Precision, recall and F1 are calculated only from the cases below.</p>
+            </div>
+            <div class="metric-grid metric-grid-compact" id="analyticsSummary"></div>
+            <div class="test-progress" id="analyticsProgress" hidden>
+              <div class="test-progress-head"><span id="analyticsProgressLabel">Preparing suite</span><strong id="analyticsProgressCount">0 / 0</strong></div>
+              <div class="scan-progress"><span id="analyticsProgressBar"></span></div>
+            </div>
+            <div id="analyticsResults" class="test-results"></div>
+          </section>
+
+          <section class="panel methodology-panel">
+            <div class="panel-head">
+              <div><span class="panel-kicker">Calculation</span><h2>How these metrics are produced</h2></div>
+            </div>
+            <div class="methodology-grid">
+              <div><span>True positive</span><p>A case labelled malicious is flagged at moderate or above.</p></div>
+              <div><span>False positive</span><p>A benign case is flagged at moderate or above.</p></div>
+              <div><span>False negative</span><p>A malicious case scores below the flag threshold.</p></div>
+              <div><span>Precision</span><p>TP ÷ (TP + FP). Of everything flagged, how much was malicious.</p></div>
+              <div><span>Recall</span><p>TP ÷ (TP + FN). Of known malicious cases, how many were caught.</p></div>
+              <div><span>F1 score</span><p>Harmonic mean of precision and recall.</p></div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             SCAN HISTORY
+             ═══════════════════════════════════════════════════════════════════ -->
+        <section class="section-panel" data-section-panel="history" id="historyPanelSection" hidden>
+          <header class="page-heading page-heading-compact">
+            <div class="heading-copy">
+              <div class="eyebrow"><span class="eyebrow-line"></span>Local scan ledger</div>
+              <h1>Scan history</h1>
+              <p>Browse every stored scan on this device. History is compacted for storage and capped at the 50 most recent analyses.</p>
+            </div>
+            <div class="heading-actions">
+              <button class="secondary-button" data-route="scanner"><svg class="icon"><use href="#i-radar"></use></svg>New scan</button>
+              <button class="danger-button" id="clearHistoryFull"><svg class="icon"><use href="#i-trash"></use></svg>Clear history</button>
+            </div>
+          </header>
+
+          <section class="panel">
+            <div class="ledger-toolbar history-toolbar">
+              <div class="search-field">
+                <svg class="icon"><use href="#i-search"></use></svg>
+                <input id="historySearch" type="search" placeholder="Search target, verdict or type" aria-label="Search scan history" />
+              </div>
+              <select id="historyTypeFilter" class="select-field" aria-label="Filter history by type">
+                <option value="all">All types</option>
+                <option value="url">Links</option>
+                <option value="image">Images</option>
+                <option value="message">Messages</option>
+              </select>
+              <select id="historySeverityFilter" class="select-field" aria-label="Filter history by severity">
+                <option value="all">All severities</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="moderate">Moderate</option>
+                <option value="low">Low</option>
+              </select>
+              <span class="panel-count" id="historyFullCount">0 scans</span>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table history-table">
+                <thead>
+                  <tr><th>Type</th><th>Target</th><th>Verdict</th><th>Score</th><th>Confidence</th><th>Scanned</th><th class="align-right">Actions</th></tr>
+                </thead>
+                <tbody id="historyFullList"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             SETTINGS & PRIVACY
+             ═══════════════════════════════════════════════════════════════════ -->
+        <section class="section-panel" data-section-panel="settings" id="settingsPanel" hidden>
+          <header class="page-heading page-heading-compact">
+            <div class="heading-copy">
+              <div class="eyebrow"><span class="eyebrow-line"></span>Security &amp; privacy centre</div>
+              <h1>Settings &amp; <em>privacy</em></h1>
+              <p>Understand exactly what Sentinel stores, what requires network access, and how to remove local data.</p>
+            </div>
+            <div class="heading-actions">
+              <button class="secondary-button" data-route="overview"><svg class="icon"><use href="#i-grid"></use></svg>Overview</button>
+            </div>
+          </header>
+
+          <div class="settings-grid">
+            <section class="panel settings-card">
+              <div class="panel-head"><div><span class="panel-kicker">Privacy model</span><h2>Local-first by architecture</h2></div><span class="dataset-badge"><svg class="icon"><use href="#i-lock"></use></svg>On-device</span></div>
+              <div class="settings-body">
+                <div class="privacy-point"><span class="privacy-point-icon"><svg class="icon"><use href="#i-shield"></use></svg></span><div><strong>Analysis stays in your browser</strong><p>URL, message and image checks run with local JavaScript. Uploaded files are read with browser APIs and are never executed.</p></div></div>
+                <div class="privacy-point"><span class="privacy-point-icon"><svg class="icon"><use href="#i-globe"></use></svg></span><div><strong>No external reputation service</strong><p>Sentinel does not call VirusTotal, WHOIS, DNS, certificate transparency or any other third-party service. Unknown reputation is shown as <code>UNKNOWN</code>.</p></div></div>
+                <div class="privacy-point"><span class="privacy-point-icon"><svg class="icon"><use href="#i-eye"></use></svg></span><div><strong>Links are not opened</strong><p>A scanned URL is parsed as text. Sentinel never navigates to it, requests it, or resolves its hostname.</p></div></div>
+              </div>
+            </section>
+
+            <section class="panel settings-card">
+              <div class="panel-head"><div><span class="panel-kicker">Network requirements</span><h2>What needs the network</h2></div></div>
+              <div class="settings-body">
+                <dl class="settings-list">
+                  <div><dt>Scanner analysis</dt><dd>No network access</dd></div>
+                  <div><dt>Threat intelligence analysis</dt><dd>No network access</dd></div>
+                  <div><dt>Investigations and reports</dt><dd>No network access</dd></div>
+                  <div><dt>Bundled sample images</dt><dd>Loaded from the local web server</dd></div>
+                  <div><dt>OCR and QR engines</dt><dd>Loaded once from local project assets</dd></div>
+                  <div><dt>External requests</dt><dd>None in the analysis path</dd></div>
+                </dl>
+                <p class="settings-note">The app itself is served from <code>127.0.0.1</code>. Serving files is the only network use; no scan content is transmitted.</p>
+              </div>
+            </section>
+
+            <section class="panel settings-card">
+              <div class="panel-head"><div><span class="panel-kicker">Stored data</span><h2>What this browser keeps</h2></div><span class="panel-count" id="settingsStorageSize">—</span></div>
+              <div class="settings-body">
+                <div class="storage-counts" id="settingsStorageCounts"></div>
+                <dl class="settings-list">
+                  <div><dt>Scan history</dt><dd><code>sentinel.ai.history.v1</code> · 50 scans max</dd></div>
+                  <div><dt>Investigations</dt><dd><code>sentinel.ai.investigations.v1</code></dd></div>
+                  <div><dt>Indicator ledger</dt><dd><code>sentinel.ai.indicators.v1</code> · 500 observations max</dd></div>
+                  <div><dt>Preferences</dt><dd><code>sentinel.ai.view.v1</code> · <code>sentinel.ai.section.v1</code></dd></div>
+                </dl>
+                <p class="settings-note">History is compacted: raw image metadata is removed and OCR text is truncated. Reports never include local file paths.</p>
+              </div>
+            </section>
+
+            <section class="panel settings-card danger-card">
+              <div class="panel-head"><div><span class="panel-kicker">Data controls</span><h2>Clear local data</h2></div></div>
+              <div class="settings-body">
+                <p class="settings-note">These actions are immediate and cannot be undone. Each asks for confirmation first.</p>
+                <div class="data-actions">
+                  <button class="danger-outline" data-clear="history"><svg class="icon"><use href="#i-trash"></use></svg>Clear scan history</button>
+                  <button class="danger-outline" data-clear="investigations"><svg class="icon"><use href="#i-trash"></use></svg>Clear investigations</button>
+                  <button class="danger-outline" data-clear="indicators"><svg class="icon"><use href="#i-trash"></use></svg>Clear indicator ledger</button>
+                  <button class="danger-button" data-clear="all"><svg class="icon"><use href="#i-trash"></use></svg>Clear all local data</button>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel settings-card">
+              <div class="panel-head"><div><span class="panel-kicker">Detection quality</span><h2>Scoring model</h2></div></div>
+              <div class="settings-body">
+                <dl class="settings-list">
+                  <div><dt>Score range</dt><dd>0–99 / 100</dd></div>
+                  <div><dt>Low</dt><dd>0–19 · no meaningful indicators</dd></div>
+                  <div><dt>Moderate</dt><dd>20–44 · verify before acting</dd></div>
+                  <div><dt>High</dt><dd>45–69 · strong converging indicators</dd></div>
+                  <div><dt>Critical</dt><dd>70+ · do not interact</dd></div>
+                  <div><dt>Confidence</dt><dd>Separate from severity; reflects rule coverage, not danger</dd></div>
+                </dl>
+                <p class="settings-note">Duplicate signal IDs are aggregated once. Severity floors are applied so a single critical signal cannot be diluted. A low score is not a guarantee of safety.</p>
+              </div>
+            </section>
+
+            <section class="panel settings-card">
+              <div class="panel-head"><div><span class="panel-kicker">Runtime</span><h2>Engine information</h2></div></div>
+              <div class="settings-body">
+                <dl class="settings-list">
+                  <div><dt>Engine</dt><dd>Sentinel local heuristic engine</dd></div>
+                  <div><dt>Version</dt><dd>2.5.0</dd></div>
+                  <div><dt>Runtime</dt><dd>Vanilla JavaScript in your browser</dd></div>
+                  <div><dt>Uploaded files</dt><dd>Never executed; only read as bytes</dd></div>
+                  <div><dt>Report output</dt><dd>Print-friendly HTML + JSON export</dd></div>
+                  <div><dt>Storage</dt><dd>Browser localStorage only</dd></div>
+                </dl>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <footer class="workspace-footer">
+          <div class="footer-brand"><svg class="icon"><use href="#i-shield"></use></svg> Sentinel AI</div>
+          <span>Explainable local threat intelligence. No source data is transmitted.</span>
+          <span class="footer-status"><span></span> Local engine · v2.5.0</span>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <div class="modal" id="modalCard" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="icon-button modal-close" id="modalClose" aria-label="Close dialog"><svg class="icon"><use href="#i-close"></use></svg></button>
+      <div class="modal-icon" id="modalIcon"><svg class="icon"><use href="#i-shield"></use></svg></div>
+      <span class="panel-kicker" id="modalKicker">Sentinel AI</span>
+      <h2 id="modalTitle">Title</h2>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="toast-icon"><svg class="icon"><use href="#i-check"></use></svg></span>
+    <span id="toastText">Copied</span>
+  </div>
+
+  <script src="assets/jsQR.js"></script>
+  <script src="assets/vendor/tesseract/tesseract.min.js"></script>
+  <script src="assets/scanner.js?v=4"></script>
+  <script src="assets/intel.js?v=4"></script>
+  <script src="assets/report.js?v=4"></script>
+  <script src="assets/app.js?v=4"></script>
+</body>
+</html>
