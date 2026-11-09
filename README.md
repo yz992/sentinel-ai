@@ -82,26 +82,17 @@ The same engine powers two reading levels:
 
 ## Screenshots
 
-Screenshots are not committed by default so the repository stays small. To add them:
+![Overview dashboard](docs/screenshots/overview.png)
 
-1. Start the app (see [Installation](#installation)) at a desktop width of 1440 px or wider.
-2. Run a few sample scans and create one investigation so the dashboard has real data.
-3. Capture the following views:
-   - `docs/screenshots/overview.png` — Overview dashboard with metrics and charts
-   - `docs/screenshots/intel.png` — Threat intelligence ledger and relationship graph
-   - `docs/screenshots/scanner.png` — A Simple-mode result with reasons and actions
-   - `docs/screenshots/advanced.png` — An Advanced-mode result with signals and score
-   - `docs/screenshots/investigation.png` — An open investigation with notes and evidence
-   - `docs/screenshots/analytics.png` — Detection test centre results
-4. Reference them in this README:
+![Threat intelligence ledger and relationship graph](docs/screenshots/intel.png)
 
-```markdown
-![Overview](docs/screenshots/overview.png)
-![Threat intelligence](docs/screenshots/intel.png)
-![Detection analytics](docs/screenshots/analytics.png)
-```
+![Simple-mode scan result](docs/screenshots/scanner.png)
 
-The repository includes a legacy preview at `assets/samples/sentinel-preview.png`. Replace or relocate it when adding current screenshots.
+![Advanced-mode scan result](docs/screenshots/advanced.png)
+
+![Investigation detail with notes and evidence](docs/screenshots/investigation.png)
+
+![Detection analytics results](docs/screenshots/analytics.png)
 
 ---
 
