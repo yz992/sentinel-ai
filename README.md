@@ -1,5 +1,7 @@
 # Sentinel AI
 
+Live demo: https://yz992.github.io/sentinel-ai/
+
 **A local-first threat detection and investigation workspace for suspicious links, images, QR codes and messages.**
 
 Built with AI-assisted development (Claude).
