@@ -308,11 +308,14 @@ Reports never include local file paths, session identifiers or internal engine o
 
 ## Detection test centre
 
-The Analytics workspace runs a labelled dataset of **18 cases** through the real scanner:
+The Analytics workspace runs a labelled dataset of **24 cases** through the real scanner:
 
-- 5 bundled scanner fixtures
-- Additional malicious, benign and edge cases
+- 8 link, 11 message and 5 image cases
+- Bundled fixtures plus additional malicious, benign and edge cases
+- Six unseen validation cases covering regional brand domains and paraphrased one-time-code requests
 - Image cases that exercise QR, OCR and metadata analysis
+
+On the current dataset the suite reports **24 executed, 0 errors, 23 correct, 1 false positive and 0 false negatives** — precision **93.8%**, recall **100%** and F1 **96.8%**. The single false positive is the AI-provenance image fixture: a provenance warning is not malware, but it is counted as a positive under a malware-only label.
 
 It reports:
 

@@ -1673,7 +1673,7 @@
       '<div class="result-section" style="margin-top:9px"><details class="detail-disclosure"><summary>Technical evidence</summary><div class="detail-body"><div class="detail-grid">' + detailChips(report) + '</div></div></details></div>',
       resultActionsHtml(report),
       '<div class="result-actions"><button class="result-action" data-report-json="' + escape(report.id) + '">' + icon('i-database') + 'Export JSON</button></div>',
-      '<div class="result-footer"><span>' + escape(report.engine || 'Sentinel Rule Engine') + ' · ' + escape(report.engineVersion || '2.5.0') + '</span><span>rule-based · 100% local</span></div>',
+      '<div class="result-footer"><span>' + escape(report.engine || 'Sentinel Heuristic Engine') + ' · ' + escape(report.engineVersion || '2.5.0') + '</span><span>rule-based · 100% local</span></div>',
     ].join('');
 
     refs.verdictIdle.hidden = true;
